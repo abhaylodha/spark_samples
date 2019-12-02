@@ -5,8 +5,8 @@ import org.apache.spark.sql.SparkSession
 trait SparkRunner extends Logger {
   def main(args: Array[String]): Unit = {
 
-    val appName = args.head
-    val mode = args.tail.head
+    val appName = if (args.length <= 0) "Sample Application" else args.head
+    val mode = if (args.length <= 0) "local" else args.tail.head
 
     info(s"Starting App : ${appName}")
 
@@ -28,7 +28,7 @@ trait SparkRunner extends Logger {
           .config("spark.cores.max", "2")
           .getOrCreate
 
-    run(spark: SparkSession, args.tail.tail)
+    run(spark: SparkSession, if (args.length <= 0) Array[String]() else args.tail.tail)
 
     info("Application processing completed.")
 
