@@ -15,7 +15,7 @@ object DataFrameUnion extends SparkRunner {
 
     val duration = endTime - startTime
 
-    info("Duration with DF : " + duration)
+    //info("Duration with DF : " + duration)
 
     data
 
@@ -32,7 +32,7 @@ object DataFrameUnion extends SparkRunner {
 
     val duration = endTime - startTime
 
-    info("Duration with RDD : " + duration)
+    //info("Duration with RDD : " + duration)
     data
   }
 
@@ -62,7 +62,7 @@ object DataFrameUnion extends SparkRunner {
     d2: DataFrame,
     unionOp: (DataFrame, DataFrame) => DataFrame) = {
     val startTime = System.currentTimeMillis
-    val d3 = Seq(1 to 1000).foldLeft(d1)((df, i) =>
+    val d3 = (1 to 90).foldLeft(d1)((df, i) =>
       df.transform(unionOp(_, d2)))
     d3.show(false)
     info("Count : " + d3.count)
