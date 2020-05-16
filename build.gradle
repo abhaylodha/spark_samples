@@ -15,6 +15,11 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+
+	flatDir {
+    	dirs 'libs'
+	}
+
 }
 
 sourceSets {
@@ -36,9 +41,20 @@ dependencies {
 
 	compile group: 'org.apache.spark', name: 'spark-sql_2.12', version: '2.4.0'
 
+	// https://mvnrepository.com/artifact/org.apache.spark/spark-streaming
+	compile group: 'org.apache.spark', name: 'spark-streaming_2.12', version: '2.4.0'
+
 	// https://mvnrepository.com/artifact/org.apache.spark/spark-sql-kafka-0-10
 	compile group: 'org.apache.spark', name: 'spark-sql-kafka-0-10_2.12', version: '2.4.0'
 
+	// https://mvnrepository.com/artifact/org.apache.poi/poi
+	//compile group: 'org.apache.poi', name: 'poi', version: '3.9'
+
+	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.1'
+
+    compile fileTree(dir: 'externalLibs', include: '*.jar')
+
+    compile 'org.concordion:concordion:2.2.0'
 
 	// https://mvnrepository.com/artifact/org.apache.kafka/kafka
 	compile group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.3.0'
@@ -61,3 +77,13 @@ jar {
         }
     }
 }
+
+test {
+    systemProperties['concordion.output.dir'] = "$reporting.baseDir/spec"
+    testLogging.showStandardStreams = true
+    outputs.upToDateWhen { false }
+}
+
+//task showMeCache << {
+//  configurations.compile.each { println it }
+//}

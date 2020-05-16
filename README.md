@@ -38,3 +38,6 @@ kafka-server-stop.bat F:\Kafka_Install\kafka_2.12-2.3.0\config\server.properties
 
 *) Stop Zookeeper Server :
 zookeeper-server-stop.bat F:\Kafka_Install\kafka_2.12-2.3.0\config\zookeeper.properties
+
+*) Odd Line - second char...... Even Line - second last....
+

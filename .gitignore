@@ -3,3 +3,7 @@
 /.classpath
 /.project
 /.gradle/
+/bin/
+/build/
+
+/src/main/resources/spark/streaming/twitter.txt

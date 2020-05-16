@@ -36,4 +36,14 @@ trait SparkRunner extends Logger {
 
   def run(spark: SparkSession, args: Array[String]): Unit
 
+  def getSparkSession = {
+    SparkSession
+      .builder
+      .appName("Test Application")
+      .config("spark.master", "local[5]")
+      .config("spark.ui.enabled", "true")
+      .config("spark.cores.max", "2")
+      .getOrCreate
+
+  }
 }
