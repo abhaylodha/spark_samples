@@ -1,0 +1,17 @@
+source_1 :
+   name : Legacy
+   source_type: csv_file
+   file_path: /com/ak/data_comparator/data/cars1.csv
+   exclusion : 
+
+source_2 :
+   name : Data_Mart
+   source_type: csv_file
+   file_path: /com/ak/data_comparator/data/cars2.csv
+   exclusion :
+
+comparator :
+   join_columns : [ name, year ]
+
+   columns_to_compare : [ acceleration, cylinders, displacement, horsepower, miles_per_gallon, origin, weight_in_lbs ]
+   #columns_to_compare : [ acceleration, cylinders, displacement, horsepower, miles_per_gallon, weight_in_lbs ]

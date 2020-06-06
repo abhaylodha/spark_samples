@@ -59,6 +59,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.apache.kafka/kafka
 	compile group: 'org.apache.kafka', name: 'kafka_2.12', version: '2.3.0'
 
+	// https://mvnrepository.com/artifact/org.yaml/snakeyaml
+	compile group: 'org.yaml', name: 'snakeyaml', version: '1.26'
+
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation 'com.google.guava:guava:23.0'
 
