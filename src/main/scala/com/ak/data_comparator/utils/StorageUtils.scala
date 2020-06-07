@@ -14,7 +14,7 @@ object StorageUtils extends Logger {
     runId: String,
     numberOfColumnsInTable: Int)
 
-  def persistDataFrame(spark: SparkSession, df: DataFrame,
+  def getGenericDataFrame(spark: SparkSession, df: DataFrame,
     comment: String)(implicit storageUtilsContext: StorageUtilsContext) = {
     val stageId = StageId.getNextStageId
 
@@ -65,6 +65,7 @@ object StorageUtils extends Logger {
       s"`_id_` = '${runId}_${stageId}_2' and `_bus_dt_` = ${busDt})\nselect * from `id_${runId}_${stageId}`"
 
     info(s"Data Query : $query_3")
+    (finalDF, query_3)
   }
 
 }

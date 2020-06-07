@@ -41,8 +41,10 @@ object DataFrameUtils extends Logger {
 
     val leftJoinDF = df1.join(df2, joinCondition, "left_outer")
       .filter(col(s"${config.source_2.name}_X_X_X_CHECK_COLUMN_X_X_X").isNull)
+      .transform(getOneSideColumn(1, columnsMapping))
     val rightJoinDF = df1.join(df2, joinCondition, "right_outer")
       .filter(col(s"${config.source_1.name}_X_X_X_CHECK_COLUMN_X_X_X").isNull)
+      .transform(getOneSideColumn(2, columnsMapping))
     val innerJoinDF = df1.join(df2, joinCondition)
       .transform(compareRecords(spark, columnsMapping))
 
@@ -73,6 +75,16 @@ object DataFrameUtils extends Logger {
       pair ++ Seq(ColumnNameMapping(colName, s"${config.source_1.name}_${colName}", s"${config.source_2.name}_${colName}"))
     })
 
+  }
+
+  def getOneSideColumn(side: Int, colMapping: Seq[ColumnNameMapping])(df: DataFrame): DataFrame = {
+
+    val columnsToSelect = if (side == 1)
+      colMapping.map(i => col(i.table1ColName).as(i.origName))
+    else
+      colMapping.map(i => col(i.table2ColName).as(i.origName))
+
+    df.select(columnsToSelect: _*)
   }
 
   def getCondition(config: Config) = {
