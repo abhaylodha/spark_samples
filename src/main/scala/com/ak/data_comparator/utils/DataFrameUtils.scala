@@ -20,11 +20,18 @@ object DataFrameUtils extends Logger {
 
     info(s"Reading $path")
 
+    val rawData = scala.io.Source.
+      fromInputStream(this.getClass.getResourceAsStream(path)).getLines().toSeq
+
+    import spark.implicits._
+    val csvDataDS = rawData.toDS()
+
     spark.read
       .format("csv")
       .option("header", "true")
       .option("inferSchema", "true")
-      .load(path)
+      .csv(csvDataDS)
+
   }
 
   def compareDataFrames(spark: SparkSession, config: Config, _df1: DataFrame, _df2: DataFrame) = {

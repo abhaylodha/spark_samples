@@ -22,12 +22,15 @@ object MainProcess extends SparkRunner with Logger {
     val df1 =
       DataFrameUtils.getDFFromJarData(
         spark,
-        getClass.getResource(config.source_1.file_path).getPath())
+        config.source_1.file_path)
+
+    df1.printSchema()
+    df1.show(false)
 
     val df2 =
       DataFrameUtils.getDFFromJarData(
         spark,
-        getClass.getResource(config.source_2.file_path).getPath())
+        config.source_2.file_path)
 
     val allDFs = DataFrameUtils.compareDataFrames(spark, config, df1, df2)
     implicit val storageContext = StorageUtils.StorageUtilsContext("my_schema", "my_table", "2020-06-06", "run_1", 50)
