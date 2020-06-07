@@ -45,9 +45,13 @@ object StorageUtils extends Logger {
         (a, colNameToHeaderMapping) =>
           a.withColumn(
             colNameToHeaderMapping.genericName, lit(colNameToHeaderMapping.actualName))).drop("dummy")
-      .withColumn("_id_", lit(s"${runId}_${stageId}_1"))
-      .withColumn("_bus_dt_", lit(busDt))
-      .withColumn("_comment_", lit(comment))
+      //      .withColumn("_id_", lit(s"${runId}_${stageId}_1"))
+      //      .withColumn("_bus_dt_", lit(busDt))
+      //      .withColumn("_comment_", lit(comment))
+      //	Adjustment for excel data writing
+      .withColumn("_id_", lit("_id_"))
+      .withColumn("_bus_dt_", lit("_bus_dt_"))
+      .withColumn("_comment_", lit("_comment_"))
 
     val finalDF = ((columns.length + 1 to
       storageUtilsContext.numberOfColumnsInTable)
