@@ -18,6 +18,8 @@ object MainProcess extends SparkRunner with Logger {
 
   def run(spark: SparkSession, args: Array[String]): Unit = {
     val config = ConfigReader.getConfig
+    val budDt = "2020-06-07"
+    val runId = "run_2"
 
     val df1 =
       DataFrameUtils.getDFFromJarData(
@@ -33,7 +35,7 @@ object MainProcess extends SparkRunner with Logger {
         config.source_2.file_path)
 
     val allDFs = DataFrameUtils.compareDataFrames(spark, config, df1, df2)
-    implicit val storageContext = StorageUtils.StorageUtilsContext("my_schema", "my_table", "2020-06-06", "run_1", 50)
+    implicit val storageContext = StorageUtils.StorageUtilsContext("my_schema", "my_table", budDt, runId, 50)
 
     val (genericDF1, genericQuery1) = StorageUtils.getGenericDataFrame(spark, allDFs._1, s"Only in ${config.source_1.name}")
     val (genericDF2, genericQuery2) = StorageUtils.getGenericDataFrame(spark, allDFs._2, s"Only in ${config.source_2.name}")
@@ -45,21 +47,21 @@ object MainProcess extends SparkRunner with Logger {
     val mismatching = allDFs._3.filter(col("mismatch") =!= "")
 
     val summaryDF = Seq(
-      ("2020-06-06", s"Only in ${config.source_1.name} Table", allDFs._1.count, genericQuery1),
-      ("2020-06-06", s"Only in ${config.source_2.name} Table", allDFs._2.count, genericQuery2),
-      ("2020-06-06", s"Common in both", allDFs._3.count, genericQuery3),
-      ("2020-06-06", s"Matching in Common", matching.count, genericQuery3 + " where mismatch = ''"),
-      ("2020-06-06", s"MisMatch in Common", mismatching.count, genericQuery3 + " where mismatch != ''")).toDF(
+      (budDt, s"Only in ${config.source_1.name} Table", allDFs._1.count, genericQuery1),
+      (budDt, s"Only in ${config.source_2.name} Table", allDFs._2.count, genericQuery2),
+      (budDt, s"Common in both", allDFs._3.count, genericQuery3),
+      (budDt, s"Matching in Common", matching.count, genericQuery3 + " where mismatch = ''"),
+      (budDt, s"MisMatch in Common", mismatching.count, genericQuery3 + " where mismatch != ''")).toDF(
         "_bus_dt_", "particular", "value", "query")
 
     summaryDF.show(false)
 
     val xlsSvc = new ExcelUtils("/F:/Workspaces/PRJ_ComparatorDisplay/result_explorer/Data.xls")
 
-    xlsSvc.insertAllRecords("summary", convertDFToList(summaryDF))
-    xlsSvc.insertAllRecords("data", convertDFToList(genericDF1))
-    xlsSvc.insertAllRecords("data", convertDFToList(genericDF2))
-    xlsSvc.insertAllRecords("data", convertDFToList(genericDF3))
+    xlsSvc.insertAllRecords("summary", summaryDF)
+    xlsSvc.insertAllRecords("data", genericDF1)
+    xlsSvc.insertAllRecords("data", genericDF2)
+    xlsSvc.insertAllRecords("data", genericDF3)
 
   }
 

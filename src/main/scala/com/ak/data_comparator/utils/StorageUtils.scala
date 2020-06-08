@@ -4,6 +4,11 @@ import my.spark.common_utils.Logger
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.{ lit }
+import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.types.StructField
+import org.apache.spark.sql.types.StringType
+import org.apache.spark.sql.Row
+import org.apache.spark.sql.catalyst.encoders.RowEncoder
 
 object StorageUtils extends Logger {
 
@@ -53,20 +58,37 @@ object StorageUtils extends Logger {
       .withColumn("_bus_dt_", lit("_bus_dt_"))
       .withColumn("_comment_", lit("_comment_"))
 
-    val finalDF = ((columns.length + 1 to
+    val finalDF = colNamesDF.union(dataDF)
+    //    val finalDF = ((columns.length + 1 to
+    //      storageUtilsContext.numberOfColumnsInTable)
+    //      .foldLeft(colNamesDF.union(dataDF))(
+    //        (df, colNo) => df.withColumn(s"col$colNo", lit(null))))
+
+    val additionalColumns = (columns.length + 1 to
       storageUtilsContext.numberOfColumnsInTable)
-      .foldLeft(colNamesDF.union(dataDF))(
-        (df, colNo) => df.withColumn(s"col$colNo", lit(null))))
+      .foldLeft(Seq[String]())((data, colNo) => data ++ Seq(s"col$colNo"))
+      .map(StructField(_, StringType))
+
+    val newSchema = StructType(finalDF.schema.fields ++ additionalColumns)
+
+    finalDF.mapPartitions(iterator => {
+      iterator.map(item => {
+        val nullColumns = (columns.length + 1 to
+          storageUtilsContext.numberOfColumnsInTable)
+          .foldLeft(Seq[String]())((data, colNo) => data ++ Seq(null: String))
+        Row.fromSeq(item.toSeq ++ nullColumns)
+      })
+    })(RowEncoder(newSchema))
 
     finalDF.show(1000, false)
 
-    val query_1 = colNameToHeaderMap.foldLeft(s"\n\n\n${comment} : \nwith `id_${runId}_${stageId}` as \n(select \n")((
+    val query_1 = colNameToHeaderMap.foldLeft(s"with `id_${runId}_${stageId}` as \n(select \n")((
       qry, colNameToHeaderMap) => qry + "  `" + colNameToHeaderMap.genericName +
       "` as `" + colNameToHeaderMap.actualName + "`,\n")
     val query_2 = query_1.substring(0, query_1.length - 2)
     val query_3 = query_2 +
-      s"\nfrom `${storageUtilsContext.storageSchemaName}.${storageUtilsContext.storageTableName}`\nwhere " +
-      s"`_id_` = '${runId}_${stageId}_2' and `_bus_dt_` = ${busDt})\nselect * from `id_${runId}_${stageId}`"
+      s"\nfrom `${storageUtilsContext.storageSchemaName}`.`${storageUtilsContext.storageTableName}`\nwhere " +
+      s"`_id_` = '${runId}_${stageId}_2' and `_bus_dt_` = '${busDt}')\nselect * from `id_${runId}_${stageId}`"
 
     info(s"Data Query : $query_3")
     (finalDF, query_3)
