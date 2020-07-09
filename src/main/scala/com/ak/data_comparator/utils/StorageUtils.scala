@@ -80,7 +80,7 @@ object StorageUtils extends Logger {
       })
     })(RowEncoder(newSchema))
 
-    finalDF.show(1000, false)
+    //finalDF.show(1000, false)
 
     val query_1 = colNameToHeaderMap.foldLeft(s"with `id_${runId}_${stageId}` as \n(select \n")((
       qry, colNameToHeaderMap) => qry + "  `" + colNameToHeaderMap.genericName +

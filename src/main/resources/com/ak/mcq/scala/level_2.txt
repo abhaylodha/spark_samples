@@ -1,0 +1,145 @@
+Q.1 sbt is an open-source build tool for Scala and Java projects. Can it execute tasks in parallel?
+No, it can only execute one task at once
+Yes
+Answer : Yes
+
+Q.2 Which of the following statements is untrue about a functor in Scala?
+It is a mapping between categories
+It is a built-in construct in Scala
+It maps objects or entities of one category to those of another
+Answer : It is a built-in construct in Scala
+
+Q.3 Select the true statements from the following:
+A Future is an object
+A Future holds a value that may become available at a later point in time
+We can complete a promise only once
+All of the above
+Answer : All of the above
+
+Q.4 Left and Right are case classes. True or False?
+False
+True
+Answer : True
+
+Q.5 Which of the following statements are true about Either?
+It is a sealed abstract class
+We can use it to deal with possible missing values
+ An instance of Either can be an instance of Left or Right
+All of the above
+Answer : All of the above
+
+Q.6 What Boolean value do the following statements return?
+case class People(name:String,age:Int)
+    val people1=People("Ayushi",22)
+    val people2=People("Ayushi",22)
+    people1==people2
+False
+True
+Answer : True
+
+Q.7 Select the correct output for the following code:
+    val leaders=collection.mutable.Buffer("Reykon")
+    leaders+="obama"
+    println(leaders)
+
+ArrayBuffer(Reykon, Obama)
+ArrayBuffer(Reykon)
+List(Reykon, obama)
+The code throws an error
+Answer : ArrayBuffer(Reykon, Obama)
+
+Q.8 Looking at the previous code, can you predict the output of the following code?
+    val stuff=collection.mutable.Buffer("blue")
+    stuff+=44
+    println(stuff)
+
+ArrayBuffer(blue, 44)
+ArrayBuffer(blue)
+Something else
+The code throws an error
+Answer : The code throws an error
+
+Q.9 Which of the following function definitions are erroneous?
+def functionName(x:Int,y:Int):Int=x+y
+def functionName(x:Int,y:Int):Int={return x+y}
+def functionName(x:Int,y:Int):Int{x+y} ()
+def functionName(x:Int,y:Int)={x+y}
+Answer : def functionName(x:Int,y:Int):Int{x+y} ()
+
+Q.10 Scala is also a:
+Style Sheets Language
+Scripting Language
+Cloud Computing Language
+Answer : Scripting Language
+
+Q.11 Of the following, select the Scala construct that holds pairwise different elements of the same type.
+Sets
+Groups
+Forums
+Maps
+Answer : Sets
+
+Q.12 Select the correct value specified by the following line of code:
+"abcde" ensuring (_.length>3)
+abc
+abcd
+abcde
+The code throws an error
+Answer : abcde
+
+Q.13 Which is the correct value of the following expression?
+     List(1,2,3)flatMap(x=>List(x,4))
+
+List(1,2,3,4)
+List(1,4,2,4,3,4)
+List(4,4,4)
+List (1,2,3,x,4)
+Answer : List(1,4,2,4,3,4)
+
+Q.14 For which kind of data should you use a case class?
+Mutable data
+Immutable data
+Both of these
+None of these
+Answer : Immutable data
+
+Q.15 The following technique/construct lets us transform a function with multiple
+     arguments into a chain of functions. Each of these has one single argument.
+Extractors
+Traits
+Trait mixins
+Currying
+Answer : Currying 
+
+Q.16 How do you abruptly stop execution in the REPL?
+Pressing Ctrl+C
+Pressing Ctrl+Q
+Pressing Ctrl+W
+Answer : Pressing Ctrl+C
+
+Q.17 Which of the following is true about Scala and Java?
+Both work with popular IDEs like Eclipse, Netbeans, and IntelliJ
+Both run on the JVM
+We can call Scala from Java and Java from Scala
+All of the above
+Answer : All of the above
+
+Q.18 Scala is a portmanteau (Abbreviation) for:
+Scalar and Language
+Script and Language
+Sequential and Language
+Scalable and Language
+Answer : Scalable and Language
+
+Q.19 Its Java compatibility makes Scala suitable for:
+Android Development
+Apple Development
+Microsoft Development
+Google Development
+Answer : Android Development
+
+Q.20 A collection of type collection.Seq is immutable.
+False
+True
+Answer : True
+

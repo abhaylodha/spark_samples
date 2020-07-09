@@ -18,16 +18,13 @@ object MainProcess extends SparkRunner with Logger {
 
   def run(spark: SparkSession, args: Array[String]): Unit = {
     val config = ConfigReader.getConfig
-    val budDt = "2020-06-07"
-    val runId = "run_2"
+    val budDt = "2020-06-09"
+    val runId = "run_1"
 
     val df1 =
       DataFrameUtils.getDFFromJarData(
         spark,
         config.source_1.file_path)
-
-    df1.printSchema()
-    df1.show(false)
 
     val df2 =
       DataFrameUtils.getDFFromJarData(
@@ -56,12 +53,13 @@ object MainProcess extends SparkRunner with Logger {
 
     summaryDF.show(false)
 
-    val xlsSvc = new ExcelUtils("/F:/Workspaces/PRJ_ComparatorDisplay/result_explorer/Data.xls")
+    //val xlsSvc = new ExcelUtils("/F:/Workspaces/PRJ_ComparatorDisplay/result_explorer/Data.xls")
+    val xlsSvc = new ExcelUtils("/C:/DEV/Workspaces/PRJ_Comparator_Display/comparator_display/result_explorer/Data.xls")
 
     xlsSvc.insertAllRecords("summary", summaryDF)
-    xlsSvc.insertAllRecords("data", genericDF1)
-    xlsSvc.insertAllRecords("data", genericDF2)
-    xlsSvc.insertAllRecords("data", genericDF3)
+    //    xlsSvc.insertAllRecords("data", genericDF1)
+    //    xlsSvc.insertAllRecords("data", genericDF2)
+    //    xlsSvc.insertAllRecords("data", genericDF3)
 
   }
 

@@ -1,0 +1,120 @@
+Q.1. Without an explicit import, maps in Scala are by default:
+Immutable
+Mutable
+Answer : Immutable
+
+Q.2. Functions and numbers are objects in Scala.
+True
+False
+Answer : True
+
+Q.3. Every class in Scala inherits from a super class. Implicitly, this is scala.AnyRef.
+False
+True
+Answer : True
+
+Q.4. What is Scala’s programming paradigm?
+Statically-Typed
+Functional
+Object-Oriented
+All of these
+Answer : All of these
+
+Q.5. We can have static members in classes.
+False
+True
+Answer : False
+
+Q.6. Scala is case-insensitive. Identifiers Name and name are the same things.
+False
+True
+Answer : False
+
+Q.7. What does type inference mean?
+We must explicitly mention the data type for a variable
+Scala determines a variable’s type by looking at its value
+Answer : Scala determines a variable’s type by looking at its value
+
+Q.8. Omitting a semicolon(;) at the end of a statement causes the compiler to throw an error.
+False
+True
+Answer : False
+
+Q.9. UNIT is a data type in Scala. It pertains to no meaningful information.
+True
+False
+Answer : True
+
+Q.10. Which of the following statements are true about Lists and Arrays?
+Lists are immutable
+Arrays are mutable
+Once you have declared a List, you cannot add more elements later
+All of the above
+Answer : All of the above
+
+Q.11. A class inheriting from a trait and implementing its interface inherits all code in it.
+False
+True
+Answer : True
+
+Q.12. Consider the following statements about vals and vars. Select the ones that are true.
+val is a constant
+Reassigning to a val throws an error
+Reassigning to a var doesn’t throw an error
+All of the above
+Answer : All of the above
+
+Q.13. How do you turn the string “batmanstein” to the string “Man”?
+“batmanstein”.drop(3).capitalize.take(3)
+“batmanstein”.drop(3).take(3).capitalize
+All of the above
+None of these
+Answer : All of the above
+
+Q.14. A closure is:
+A function whose return value depends on a variable declared outside it
+A function that takes, as argument, another function
+A function that returns, as argument, another function
+A function that returns a Future
+Answer : A function whose return value depends on a variable declared outside it
+
+Q.15. We use the following keyword to define a function in Scala:
+def
+func
+function
+We use the data type instead
+Answer : def
+
+Q.16. Select the correct statements for Nil, Null, None, and Nothing.
+None is the value of an Option with no value in it
+Nothing is the bottom type of the entire type system
+All of the above
+None of the above
+Answer : All of the above
+
+Q.17. What is a monad in Scala?
+A function with a single parameter
+An object that wraps another
+A singleton object
+None of the above
+Answer : An object that wraps another
+
+Q.18. Select the true statements about iterators.
+To get the next item, we use next()
+We can use the method hasNext to find out if it has another element left
+They yield the next element in the iterator
+All of the above
+Answer : All of the above
+
+Q.19. We do not need to pass these parameters to a method when calling it:
+Named arguments
+Implicit parameters
+Default parameters
+Command-line arguments
+Answer : Implicit parameters
+
+Q.20. What is a type class in Scala?
+A class that performs boxing of a certain data type
+A companion class
+A trait with at least one type variable
+Answer : A trait with at least one type variable
