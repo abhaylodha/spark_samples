@@ -21,8 +21,7 @@ object CommonGroup extends SparkRunner with Logger {
       ("TR5", "TG2"),
       ("TR6", "TG6"),
       ("TR7", "TG2"),
-      ("TR8", "TG1"))
-      .toDF("trade_ref_id", "trade_ref_group")
+      ("TR8", "TG1")).toDF("trade_ref_id", "trade_ref_group")
 
     df.show(false)
 
@@ -32,7 +31,7 @@ object CommonGroup extends SparkRunner with Logger {
 
     groupIdDF.show(false)
 
-    val finalData = df.join(groupIdDF, col("trade_ref_group") === col("value"))
+    val data = df.join(groupIdDF, col("trade_ref_group") === col("value"))
       .drop("value")
       .withColumnRenamed("group_id", "group_id_1")
       .join(groupIdDF, col("trade_ref_id") === col("value"))
@@ -40,8 +39,36 @@ object CommonGroup extends SparkRunner with Logger {
       .withColumnRenamed("group_id", "group_id_2")
       .withColumn("group_id", when(col("group_id_1") < col("group_id_2"), col("group_id_1"))
         .otherwise(col("group_id_2")))
+      .select("trade_ref_id", "trade_ref_group", "group_id")
 
-    finalData.show(false)
+    data.show(false)
+
+    val data_v1 = data.alias("d1").join(
+      data.alias("d2"),
+      col("d1.trade_ref_id") === col("d2.trade_ref_id"))
+      .withColumn("group_id_v1", when(col("d1.group_id") < col("d2.group_id"), col("d1.group_id"))
+        .otherwise(col("d2.group_id")))
+      .select(
+        col("d1.trade_ref_id").as("trade_ref_id"),
+        col("d1.trade_ref_group").as("trade_ref_group"),
+        col("group_id_v1").as("group_id"))
+      .distinct
+
+    data_v1.show(false)
+
+    val data_v2 = data_v1.alias("d1").join(
+      data_v1.alias("d2"),
+      col("d1.trade_ref_group") === col("d2.trade_ref_group"))
+      .withColumn("group_id_v2", when(col("d1.group_id") < col("d2.group_id"), col("d1.group_id"))
+        .otherwise(col("d2.group_id")))
+      .select(
+        col("d1.trade_ref_id").as("trade_ref_id"),
+        col("d1.trade_ref_group").as("trade_ref_group"),
+        col("group_id_v2").as("group_id"))
+      .distinct
+      .orderBy(col("group_id"))
+
+    data_v2.show(false)
 
   }
 }
