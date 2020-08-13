@@ -40,17 +40,25 @@ object CommonGroup extends SparkRunner with Logger {
       ("TR10", "TG11"),
       ("TR11", "TG11"),
       ("TR11", "TG12"),
-      ("TR12", "TG12")).toDF("trade_ref_id", "trade_ref_group")
+      ("TR13", "TG12"),
+      ("TR13", "TG13"),
+      ("TR13", "TG13"),
+      ("TR13", "TG14"),
+      ("TR14", "TG14"),
+      ("TR14", "TG15"),
+      ("TR15", "TG15"),
+      ("TR15", "TG16"),
+      ("TR16", "TG16")).toDF("trade_ref_id", "trade_ref_group")
 
-    df.show(false)
+    df.show(50, false)
 
     val groupIdDF = df.groupBy("trade_ref_group")
       .agg(collect_set(col("trade_ref_id")).as("trade_ref_id"))
-      .transform(d => { d.show(false); d })
+      //.transform(d => { d.show(false); d })
       .withColumn("group_id", row_number.over(Window.orderBy("trade_ref_group")))
       .withColumn("trade_ref_id", explode(col("trade_ref_id")))
 
-    groupIdDF.show(false)
+    //groupIdDF.show(false)
 
     //updateGroupId(groupIdDF).show(false)
 
@@ -65,7 +73,7 @@ object CommonGroup extends SparkRunner with Logger {
     val finalDF = checkAndUpdateGroup(groupIdDF, counts)
 
     info("Final DF :")
-    finalDF.show(false)
+    finalDF.show(50, false)
   }
 
   @tailrec
@@ -96,10 +104,10 @@ object CommonGroup extends SparkRunner with Logger {
       .agg(
         collect_set(col("trade_ref_group")).as("trade_ref_group"),
         min("group_id").as("group_id"))
-      .transform(d => { d.show(false); d })
+      //.transform(d => { d.show(false); d })
       .withColumn("trade_ref_group", explode(col("trade_ref_group")))
 
-    groupIdDF2.show(false)
+    //groupIdDF2.show(false)
 
     val groupIdDF3 = groupIdDF2.groupBy("trade_ref_group")
       .agg(
@@ -132,30 +140,45 @@ object CommonGroup extends SparkRunner with Logger {
    * |TR10        |TG11           |
    * |TR11        |TG11           |
    * |TR11        |TG12           |
-   * |TR12        |TG12           |
+   * |TR13        |TG12           |
+   * |TR13        |TG13           |
+   * |TR13        |TG13           |
+   * |TR13        |TG14           |
+   * |TR14        |TG14           |
+   * |TR14        |TG15           |
+   * |TR15        |TG15           |
+   * |TR15        |TG16           |
+   * |TR16        |TG16           |
    * +------------+---------------+
-   * Count : Map(trade_ref_id -> 12, trade_ref_group -> 7)
+   * Count : Map(trade_ref_id -> 15, trade_ref_group -> 11)
    *
    * Output :
    * +---------------+------------+--------+
    * |trade_ref_group|trade_ref_id|group_id|
    * +---------------+------------+--------+
-   * |TG1            |TR4         |1       |
-   * |TG1            |TR1         |1       |
-   * |TG2            |TR7         |1       |
    * |TG2            |TR1         |1       |
    * |TG1            |TR3         |1       |
    * |TG2            |TR5         |1       |
    * |TG1            |TR8         |1       |
-   * |TG12           |TR11        |2       |
-   * |TG12           |TR12        |2       |
-   * |TG11           |TR11        |2       |
+   * |TG1            |TR4         |1       |
+   * |TG1            |TR1         |1       |
+   * |TG2            |TR7         |1       |
+   * |TG14           |TR14        |2       |
    * |TG10           |TR9         |2       |
+   * |TG12           |TR11        |2       |
+   * |TG14           |TR13        |2       |
+   * |TG13           |TR13        |2       |
+   * |TG15           |TR14        |2       |
+   * |TG15           |TR15        |2       |
+   * |TG16           |TR16        |2       |
+   * |TG12           |TR13        |2       |
    * |TG10           |TR10        |2       |
-   * |TG11           |TR10        |2       |
    * |TG9            |TR9         |2       |
-   * |TG6            |TR2         |6       |
-   * |TG6            |TR6         |6       |
+   * |TG16           |TR15        |2       |
+   * |TG11           |TR10        |2       |
+   * |TG11           |TR11        |2       |
+   * |TG6            |TR2         |10      |
+   * |TG6            |TR6         |10      |
    * +---------------+------------+--------+
    *
    */
