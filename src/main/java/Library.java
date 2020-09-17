@@ -8,5 +8,12 @@ public class Library {
 
 	public static void main(String[] args) {
 		System.out.println("Hello");
+
+		//System.getProperties().list(System.out);
+
+		System.out.println(System.getProperty("sun.arch.data.model"));
+
+		System.out.println(System.getProperty("os.name"));
+		
 	}
 }

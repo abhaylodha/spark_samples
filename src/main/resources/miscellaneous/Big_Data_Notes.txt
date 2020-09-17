@@ -1,0 +1,111 @@
+Tez
+   Alternative to MapReduce and part of Stinger initiative.
+   Intermediate output is stored in memory instead of writing it to disk.
+
+ORC
+	"Optimized Row Columnar" file format.
+	Recommended and mostly used to optimize Hive quieries.
+	Data gets divided into stripes.
+	Each stripe has light weight indexes stored in index data section and aggregates (count, sum, min, max, average) stored in stripe footer.
+	Enables compression.
+
+Pig
+	A scripting language.
+	Uses MapReduce.
+	Loads data from files, does some transformations, writes back data.
+	Used for quick prototyping.
+
+Zookeeper
+	Distributed corodination functionality.
+
+Kafka
+	Scalable, Distributed Messaging queue.
+	Follows Pub-sub design pattern.
+	Producers/Consumers publish/subscribe to a topic.
+	topics have partitions.
+	paritions can be on different node, but one partition can be only on one node.
+	Kafka guarantees message sequences.
+	consumers can be in a consumer group. Consumer group will have only one delivery of a message. This will behave like a queue.
+	
+Flume, LogStash
+	Can ingest data to something like Kafka queue.
+	
+Spark Streaming
+	Micro batch of events.
+
+HBase
+	It's for random access, read/write operations.
+	It's a non relational DB.
+	Uses zookeeper for distributed, highly available coordination.
+	Follows CP model of CAP theorem.
+	It has a row key, Column families and Column qualifiers.
+	Row key is unique within the HBase Table.
+	Column families are logical grouping of columns. CF will have separate directory.
+		e.g. Customer Info, Sales Info
+	Column qualifiers are actual columns.
+		e.g. First Name, Last Name within CF - CustInfo
+	It has horizontal split of data using regions.
+	Each region is within a regionServer.
+	regionServer has Memstore and WAL (Write Ahead Log).
+	WAL ensures logs are appended for ensuring consistency.
+	Memstore is completely within memory.
+	when Memstore reaches to it's threshold, it flushes the memstore to HFile.
+	Format of MemStore and HFile is same.
+	Region Server has a BlockCache, which stores the most recently used data blocks in memory.
+
+Spark Optimization
+	Spark is memory intesive. So it is already faster than MapReduce or any other processing design pattern.
+	Couple of things that we can do is -
+	(01) Filter out as much data as possible before doing further processing.
+	(02) Narrow transformations are ok, but have a closer look at wide transformations.
+	(03) Use broadcasts
+	(04) Prefer ReduceByKey over GroupByKey
+	(05) Use caching for data which is 
+		A) Reused in multiple actions.
+		B) Larger in size in order to avoid recomputations in case of RDD loss.
+	(06) Avoid as much as possible shuffle operations.
+	(07) Proper parameters to Spark Submit
+		A) Number of executers/cores
+		B) Based on data size, the shuffle partitions should be adjusted - spark.sql.shuffle.partitions
+		C) spark.sql.autoBroadcastJoinThreshold
+		D) Provide join strategy hints
+	   spark.table("src").join(spark.table("records").hint("broadcast"), "key").show()
+			allowed hints - coalesce, repartition, repartition_by_range
+	(08) Checkpointing
+	(09) Data Locality
+
+YARN Optimization
+	# of containers = min(cores*2, disks*1.8, Total RAM / MIN_CONTAINER_SIZE)
+	Memory per container = max(MIN_CONTAINER_SIZE, Total RAM / # of containers)
+
+ACID
+	Atomicity - all or none transactions
+	Consitency - Only valid data is saved/returned
+	Isolation - Able to isolate transactions from one another
+	Durability - Committed data will not be lost.
+
+JOIN Strategies
+	Hive determines join type on it's own.
+
+	In-memory join - high performing join.
+		Smaller table is made available as a local to other table.
+
+	Full Map Reduce join - least performing join.
+		Forms key value pairs for both tables. Shuffles data and performs join operations in reducer phase (shuffle-sort phase).
+		Efficient way is to filter not required data before joins.
+		Also can use bloomfilters for remove unwanted data before joins.
+		Bloomfilters sometimes gives false positives, but are harmless.
+
+	Sort-merge-bucket-join - for larger datasets.
+		Both table data should be clustered by, sorted by same column and same #of buckets should be there.
+		With this, no reduce task is required.
+
+Hive Buckets
+	To further partition data into buckets. Buckets are arrived at based on a hash value of a column.
+
+High Availability of NameNode
+	Generally there two NameNodes, one is Active NameNode and second is StandBy NameNode.
+	Both have a zookeeperfailover controller running on them. Both coordinate with each other through Zookeeper configuration.
+	Active Namenode, puts a lock in Zookeeper and keeps sending heartbits.
+	Each cluster has 3 Journal nodes. Each journal node stores data of Active NameNode. It uses editlogs and FS Image in order to reproduce the content. Standby node, replicates the content from Journalnode, when failover happens, the Standby Node, puts a lock in Zookeeper and brodcasts a message stating it is the leader now.
+
