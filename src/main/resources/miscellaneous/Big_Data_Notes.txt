@@ -109,3 +109,36 @@ High Availability of NameNode
 	Active Namenode, puts a lock in Zookeeper and keeps sending heartbits.
 	Each cluster has 3 Journal nodes. Each journal node stores data of Active NameNode. It uses editlogs and FS Image in order to reproduce the content. Standby node, replicates the content from Journalnode, when failover happens, the Standby Node, puts a lock in Zookeeper and brodcasts a message stating it is the leader now.
 
+Spark Log Location :
+	log4j.appender.file.File=${spark.yarn.app.container.log.dir}/${logfile.name}.log
+	If done, then only cluster manager (yarn) can transfer the logs to driver for you to read.
+	
+	These variables should be properly defined. Even in local IDE, spark-submit should be passed with 
+	proper values using -D parameter.
+	Cluster should have already been set it correctly.
+	
+	spark.drive.extraJavaOptions is used to pass values to Spark Driver.
+	-Dlog4j.configuration=file:log4j.properties
+	
+	spark.drive.extraJavaOptions can be defined in SPARK_HOME/conf/spark-defaults.conf
+	
+	Spark Session configs can be supplied in 
+		1) sparkConf object or
+		2) spark submit or
+		3) conf/spark-defaults.conf or
+		4) Environment variables
+	
+	Mentioned as per the precedence.
+
+	If you use both, sparkconf will get heghest precedence.
+	
+	When to use which option ?
+		Wherever a special name is within spark submit, use it. Else us Spark Conf.
+		
+	Spark generally creates a separate job for each action.
+		reading data is an action.
+		inferring schema is an action.
+	
+	Each wide transformation is a Stage within the job.
+	
+	
