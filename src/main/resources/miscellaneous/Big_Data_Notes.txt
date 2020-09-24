@@ -140,5 +140,27 @@ Spark Log Location :
 		inferring schema is an action.
 	
 	Each wide transformation is a Stage within the job.
+		Consider Code as below -
+
+	What can be debugged and what not in Spark ?
 	
+	Only map, flatMap, forEach accepts a lambda function and can be debugged.
+	Other generated code cannot be debugged.
+
+	
+	Catalyst optimizer analyses code and decides how the code should be executed and lays out an execution plan. 
+	
+	Wherever possible, use Spark SQL, then DataFrame APIs and if not possible, then Dataset APIs.
+	
+	Dataset APIs are language native APIs in Scala and Java. These are strongly typed objects in JVM based language like - Java and Scala.
+	
+	Dataframe works on Generic Type - Row, Column. Does not offer compile time type safety.
+	Dataset works on Specific Type - Case Classes. Offers compile time type safety.
+	
+	RDD's are flexible, but involves lot of code to same thing with just few DataFrame APIs.
+	Also Spark do not have any opportunity to optimize the code.
+	RDDs are raw way of processing.
+	Also RDD use should be avoided as Catalyst optimizer benefits are not available.
+	Developer should use RDD only when we want custom partitioner and manage how data gets partitioned.
+
 	
